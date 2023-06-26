@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StatusBar, Image, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableOpacity, LayoutAnimation } from 'react-native';
 import FundoOndulado from '../../componentes/FundoOndulado';
 import { TelaDeFundo } from '../../componentes/TelaDeFundo';
 import { Formulario } from '../../componentes/Formulario';
@@ -9,12 +9,34 @@ import { Carrossel } from '../../componentes/Carrossel';
 
 export default function Onboarding({ navigation }) {
   const [fazerLogin, setFazerLogin] = useState(false);
+  // determina o tamanho da parte branca acima do input 
   const [altura, setAltura] = useState(250);
 
+  // vamos fazer outra animação para que as informações apareçam de forma 
+  // efeito cascata, sem que apareça tudo de uma vez
+  const animacaoCustomizada = {
+    // duração da animação
+    duration: 1500,
+    create: {
+      // spring traz um efeito parecido com uma mola
+      type: LayoutAnimation.Types.spring,
+      // mover na diagonal (eixo X e Y)
+      property: LayoutAnimation.Properties.scaleXY,
+      // numero de amortecimento na aplicação
+      springDamping: 0.7
+    }
+  }
+
+  LayoutAnimation.configureNext(animacaoCustomizada);
+
   function avancar() {
+
     if (fazerLogin) {
       navigation.navigate('Principal');
     } else {
+      // vamos fazer a animação
+      // aparecem de forma linear
+      LayoutAnimation.linear();
       setAltura(400);
       setFazerLogin(true);
     }
