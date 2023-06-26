@@ -5,13 +5,37 @@ import { InformacoesUsuario } from '../../componentes/InformacoesUsuario';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import mapa from '../../assets/mapa.png';
 import styles from './styles';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { Button } from 'react-native-web';
 
 export default function Detalhes(props) {
   const dados = props.route.params;
 
+  // variavel que ao alterar a posição, ela mexerá com o estilo de algum elemento da tela 
+  const posicao = useSharedValue(0);
+
+  const estiloAnimado = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          // isso vai fazer o carregamento suave na tela 
+          // ao alterar o valor da posicao, alteramos o estilo
+          translateX: withSpring(posicao.value)
+        }
+      ]
+    }
+  })
+
+  function alterarPosicaoBloco(){
+    posicao.value = Math.random() * 255;
+  }
+
   return (
     <TelaDeFundo>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        {/* view com animação embutida nela */}
+        <Animated.View style={[{ backgroundColor: 'green', width: 50, height: 50 }, estiloAnimado]} />
+        <Button title='Mova' onPress={alterarPosicaoBloco} />
         <InformacoesUsuario
           nome={dados.nome}
           detalhes="Cliente desde 2018"
